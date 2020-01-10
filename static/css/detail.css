@@ -1,0 +1,48 @@
+.question-info{
+    text-align: center;
+    margin-top: 15px;
+}
+
+.answer-list li{
+    list-style:none;
+    padding-top: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+ul{
+    padding-left: 0px;
+}
+
+ul li p{
+    padding-top: 5px;
+    padding-left: 53px;
+}
+
+.user-info{
+    font-size: 18px;
+    line-height: 38px;
+}
+
+.user-info .username{
+    margin-left: 10px;
+    color: #002200;
+    font-weight: 600;
+}
+
+.user-info .create_time{
+    float: right;
+    color: #C0C0C0
+}
+
+h3{
+    font-weight: 900;
+}
+
+.author_name{
+    font-weight: 600;
+}
+
+.create_time{
+    font-weight: 300;
+    padding-left: 30px;
+}

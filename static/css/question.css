@@ -1,0 +1,15 @@
+.form-container{
+    width: 500px;
+    margin: 0 auto;
+    text-align: right;
+}
+
+.navbar-default .navbar-form{
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+h3{
+    color: #6600FF;
+    font-weight: 900;
+}

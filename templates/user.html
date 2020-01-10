@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}个人主页{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/user.css')}}">
+{% endblock %}
+
+{% block main %}
+<form action="" method="post">
+    <h3 style="text-align: center;font-weight: 600;">个人主页</h3>
+    <div class="user-name">
+        <p>昵称：<input autocomplete="off" placeholder="{{user.username}}" type="text" rows="2" validateevent="true"
+                     class="el-input__inner" name="username"></p>
+    </div>
+    <div class="signature">
+        {% if user_info %}
+            <p>个性签名：<input autocomplete="off" placeholder="{{user_info.signature}}" type="text" rows="6" validateevent="true"
+                       class="el-input__inner" name="signature"></p>
+        {% else %}
+            <p>个性签名：<input autocomplete="off" placeholder="设置你的签名~ ~ " type="text" rows="6" validateevent="true"
+                       class="el-input__inner" name="signature"></p>
+        {% endif %}
+    </div>
+    <div class="birthday">
+        {% if user_info %}
+            <p>生产日期：<input autocomplete="off" placeholder="{{user_info.birthday}}" type="text" rows="2" validateevent="true"
+                       class="el-input__inner" style="width: 122px;" name="birthday"></p>
+        {% else %}
+            <p>生产日期：<input autocomplete="off" placeholder="你的生日多少啊" type="text" rows="2" validateevent="true"
+                       class="el-input__inner" style="width: 122px;" name="birthday"></p>
+        {% endif %}
+    </div>
+    <p style="text-align: center;"><button type="submit" class="btn btn-primary">保存</button></p>
+</form>
+
+{% endblock %}
