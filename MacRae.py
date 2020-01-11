@@ -15,12 +15,21 @@ def men():  # 入口
     return render_template('men.html')
 
 
-@app.route('/home/')
+@app.route('/home/', methods=['GET', 'POST'])
 def index():  # 主页
-    content = {
-        'questions': Question.query.order_by('create_time').all()
-    }
-    return render_template('index.html', **content)
+    if request.method == 'GET':
+        content = {
+            'questions': Question.query.order_by('create_time').all()
+        }
+        return render_template('index.html', **content)
+    else:
+        search = request.form.get('search')
+        question = Question.query.filter(Question.title.contains(search)).first()
+        if(question):
+            number_answer = len(question.answers)
+            return render_template('detail.html', question_model=question, number_answer=number_answer)
+        else:
+            return 'no search'
 
 
 @app.route('/login/', methods=['GET', 'POST'])

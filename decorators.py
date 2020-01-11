@@ -11,3 +11,14 @@ def login_required(func):
         else:
             return redirect(url_for('login'))
     return wrapper
+
+
+# 管理员权限
+def manager_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if session.get('user_id'):  # 判断是否是管理员
+            return func(*args, **kwargs)  # return到外面
+        else:
+            return redirect(url_for('login'))
+    return wrapper
