@@ -41,6 +41,11 @@ def login():  # 登录界面
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone, User.password == password).first()
         if user:
+            if '管理员' in user.username:
+                session['user_id'] = user.id
+                session.permanent = True
+                print('登录成功')
+                return redirect(url_for('manager'))
             # 登录成功 设置Cookie
             session['user_id'] = user.id
             session.permanent = True
@@ -48,6 +53,15 @@ def login():  # 登录界面
             return redirect(url_for('index'))
         else:
             return '手机号或密码错误'
+
+
+@login_required
+@app.route('/manager/', methods=['GET', 'POST'])
+def manager():
+    content = {
+        'questions': Question.query.order_by('create_time').all()
+    }
+    return render_template('manager.html',**content)
 
 
 @login_required
@@ -83,6 +97,12 @@ def question():
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('index'))
+
+
+@app.route('/notice', methods=['GET'])
+@login_required
+def notice():
+    return render_template('Notice.html')
 
 
 @login_required
