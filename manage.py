@@ -2,7 +2,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from MacRae import app
 from extra import db
-from models import User, Question, Answer, UserInfo
+from models import User, Question, Answer, UserInfo, Notice
 
 
 manager = Manager(app)

@@ -48,3 +48,16 @@ class UserInfo(db.Model):
     user = db.relationship('User', backref=db.backref('user-info'))
 
 
+# 通知
+class Notice(db.Model):
+    __tabelname__ = 'notice'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    # now()服务器第一次运行时间， now每次创建时的当前时间
+    create_time = db.Column(db.DateTime, default=datetime.now())
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    author = db.relationship('User', backref=db.backref('notices'))  # 外链
+
+
