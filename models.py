@@ -52,12 +52,12 @@ class UserInfo(db.Model):
 class Notice(db.Model):
     __tabelname__ = 'notice'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    title = db.Column(db.String(100), nullable=False)  # 通知标题
+    content = db.Column(db.Text, nullable=False)  # 通知内容
     # now()服务器第一次运行时间， now每次创建时的当前时间
     create_time = db.Column(db.DateTime, default=datetime.now())
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    author = db.relationship('User', backref=db.backref('notices'))  # 外链
+    author = db.relationship('User', backref=db.backref('notices'))  # 外链(通知者)
 
 

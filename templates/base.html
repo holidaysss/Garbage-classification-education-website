@@ -29,16 +29,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li class="active">
-                <a href="/home/">首页 <span class="sr-only">(current)</span></a>
+                <a href="/home/">首页</a>
             </li>
             <li>
-                <a href="{{url_for('question')}}">提问</a>
+                <a href="{{url_for('question')}}">提问 {% block question_current %}{% endblock %}</a>
             </li>
             <li>
                 <a href="{{url_for('question')}}">题库</a>
             </li>
             <li>
-                <a href="{{url_for('notice')}}">公告</a>
+                <a href="{{url_for('notice')}}">公告 {% block notice_current %}{% endblock %}</a>
             </li>
 
           </ul>

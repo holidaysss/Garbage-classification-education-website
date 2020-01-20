@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import config
-from models import User, Question, Answer, UserInfo
+from models import User, Question, Answer, UserInfo, Notice
 from extra import db
 from decorators import login_required
 
@@ -30,6 +30,14 @@ def index():  # 主页
             return render_template('detail.html', question_model=question, number_answer=number_answer)
         else:
             return 'no search'
+
+
+@app.route('/notice/')  # 公告页面
+def notice():
+    content = {
+        'notices': Notice.query.order_by('create_time').all()
+    }
+    return render_template('notice.html', **content)
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -97,12 +105,6 @@ def question():
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('index'))
-
-
-@app.route('/notice', methods=['GET'])
-@login_required
-def notice():
-    return render_template('Notice.html')
 
 
 @login_required
