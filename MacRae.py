@@ -40,6 +40,24 @@ def notice():
     return render_template('notice.html', **content)
 
 
+@login_required
+@app.route('/write_notice/', methods=['GET', 'POST'])
+def write_notice():
+    if request.method == 'GET':
+        return render_template('write_notice.html')
+    else:
+        # 写入数据库
+        title = request.form.get('title')
+        content = request.form.get('content')
+        notice = Notice(title=title, content=content)
+        user_id = session.get('user_id')  # 获取id
+        user = User.query.filter(User.id == user_id).first()
+        notice.author = user
+        db.session.add(notice)
+        db.session.commit()
+        return redirect(url_for('notice'))
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():  # 登录界面
     if request.method == 'GET':

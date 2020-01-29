@@ -28,19 +28,32 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="active">
-                <a href="/home/">首页</a>
+            <li>
+                <a href="/home/">首页<span class="sr-only">(current)</span></a>
             </li>
             <li>
-                <a href="{{url_for('question')}}">提问 {% block question_current %}{% endblock %}</a>
+                <a href="{{url_for('question')}}">提问</a>
             </li>
             <li>
                 <a href="{{url_for('question')}}">题库</a>
             </li>
             <li>
-                <a href="{{url_for('notice')}}">公告 {% block notice_current %}{% endblock %}</a>
+                <a href="{{url_for('notice')}}">公告</a>
             </li>
-
+            <li>
+                <a href="{{url_for('write_notice')}}">写公告</a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                 aria-expanded="false">更多 <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </li>
           </ul>
           <form class="navbar-form navbar-left" action="" method="post">
             <div class="form-group">
