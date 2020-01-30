@@ -61,3 +61,10 @@ class Notice(db.Model):
     author = db.relationship('User', backref=db.backref('notices'))  # 外链(通知者)
 
 
+# 垃圾
+class Garbage(db.Model):
+    __tabelname__ = 'garbage'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), nullable=False)
+    code_id = db.Column(db.Integer)  # 分类代码
+    code_name = db.Column(db.String(50), nullable=False)  # 分类名称

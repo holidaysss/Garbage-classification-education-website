@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{garbage_model.name}}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+{% endblock %}
+
+{% block main %}
+    <ul>
+        <li>
+            {{garbage_model.name}}是{{garbage_model.code_name}}
+        </li>
+    </ul>
+{% endblock %}

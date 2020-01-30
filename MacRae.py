@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import config
-from models import User, Question, Answer, UserInfo, Notice
+from models import User, Question, Answer, UserInfo, Notice, Garbage
 from extra import db
 from decorators import login_required
+import re
 
 
 app = Flask(__name__)
@@ -24,6 +25,10 @@ def index():  # 主页
         return render_template('index.html', **content)
     else:
         search = request.form.get('search')
+        garbage = Garbage.query.filter(Garbage.name == search).first()
+        if(garbage):
+            print(garbage)
+            return render_template('garbage.html', garbage_model=garbage)
         question = Question.query.filter(Question.title.contains(search)).first()
         if(question):
             number_answer = len(question.answers)
