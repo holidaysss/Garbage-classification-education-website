@@ -16,7 +16,7 @@ def men():  # 入口
     return render_template('men.html')
 
 
-@app.route('/home/', methods=['GET', 'POST'])
+@app.route('/home/', methods=['GET', 'POST'])  # 主页
 def index():  # 主页
     if request.method == 'GET':
         content = {
@@ -37,6 +37,13 @@ def index():  # 主页
             return 'no search'
 
 
+@login_required
+@app.route('/test/', methods=['GET', 'POST'])  # 考试
+def test():
+    if request.method == 'GET':
+        return render_template('test.html')
+
+
 @app.route('/notice/')  # 公告页面
 def notice():
     content = {
@@ -46,7 +53,7 @@ def notice():
 
 
 @login_required
-@app.route('/write_notice/', methods=['GET', 'POST'])
+@app.route('/write_notice/', methods=['GET', 'POST'])  # 发布公告
 def write_notice():
     if request.method == 'GET':
         return render_template('write_notice.html')
@@ -63,8 +70,8 @@ def write_notice():
         return redirect(url_for('notice'))
 
 
-@app.route('/login/', methods=['GET', 'POST'])
-def login():  # 登录界面
+@app.route('/login/', methods=['GET', 'POST'])  # 登录界面
+def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
@@ -96,8 +103,8 @@ def manager():
 
 
 @login_required
-@app.route('/logout/')
-def logout():  # 注销登录
+@app.route('/logout/')  # 注销登录
+def logout():
     session.pop('user_id')
     return redirect(url_for('login'))
 
@@ -112,7 +119,7 @@ def my_context_processor():
     return {}
 
 
-@app.route('/question/', methods=['GET', 'POST'])
+@app.route('/question/', methods=['GET', 'POST'])  # 提问
 @login_required
 def question():
     if request.method == 'GET':
@@ -131,14 +138,14 @@ def question():
 
 
 @login_required
-@app.route('/detail/<question_id>')
+@app.route('/detail/<question_id>')  # 问题
 def detail(question_id):
     question_model = Question.query.filter(Question.id == question_id).first()
     number_answer = len(question_model.answers)
     return render_template('detail.html', question_model=question_model, number_answer=number_answer)
 
 
-@app.route('/regist/', methods=['GET', 'POST'])
+@app.route('/regist/', methods=['GET', 'POST'])  # 注册
 def regist():
     if request.method == 'GET':
         return render_template('regist.html')
@@ -166,7 +173,7 @@ def regist():
                 return redirect(url_for('login'))
 
 
-@app.route('/add_answer/', methods=['POST'])
+@app.route('/add_answer/', methods=['POST'])  # 回答
 @login_required
 def add_answer():
     content = request.form.get('answer_content')
@@ -182,7 +189,7 @@ def add_answer():
     return redirect(url_for('detail', question_id=question_id))
 
 
-@app.route('/user/', methods=['get', 'post'])
+@app.route('/user/', methods=['get', 'post'])  # 用户主页
 @login_required
 def user():
     if request.method == 'GET':
