@@ -3,7 +3,7 @@ import config
 from models import User, Question, Answer, UserInfo, Notice, Garbage
 from extra import db
 from decorators import login_required
-import re
+import random
 
 
 app = Flask(__name__)
@@ -40,8 +40,17 @@ def index():  # 主页
 @login_required
 @app.route('/test/', methods=['GET', 'POST'])  # 考试
 def test():
+    garbage = Garbage.query.filter(Garbage.id == random.randint(1, 22)).first()  # 随机出垃圾
     if request.method == 'GET':
-        return render_template('test.html')
+        print('get')
+
+        print(garbage.name)
+        return render_template('test.html', garbage=garbage)
+    else:
+        garbage_choice = request.form.get('garbage')  # 你选了啥
+        if(garbage.code_id == int(garbage_choice)):  # 选对了加一分
+            print(garbage_choice)
+        return render_template('test.html', garbage=garbage)
 
 
 @app.route('/notice/')  # 公告页面
