@@ -1,14 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import config
-from models import User, Question, Answer, UserInfo, Notice, Garbage
+from models import User, Question, Answer, UserInfo, Notice, Garbage, ExtraInfo, News, Video
 from extra import db
 from decorators import login_required
 import random
+import os, json
+
 
 
 app = Flask(__name__)
 app.config.from_object(config)
 db.init_app(app)
+i = 1
 
 
 @app.route('/')
@@ -43,14 +46,27 @@ def test():
     garbage = Garbage.query.filter(Garbage.id == random.randint(1, 22)).first()  # 随机出垃圾
     if request.method == 'GET':
         print('get')
-
+        print(garbage)
         print(garbage.name)
         return render_template('test.html', garbage=garbage)
     else:
         garbage_choice = request.form.get('garbage')  # 你选了啥
         if(garbage.code_id == int(garbage_choice)):  # 选对了加一分
+            print(type(session.get('score')))
+            user1 = User.query.filter(User.id == session.get('user_id')).first()
+            print(session.get('user_name'))
+            user1.score = session.get('score')+1
+            session['score'] += 1
+            db.session.commit()
             print(garbage_choice)
+        else:  # 答错扣一分
+            pass
         return render_template('test.html', garbage=garbage)
+
+
+@app.route('/classroom/')
+def classroom():
+    return render_template('classroom.html')
 
 
 @app.route('/notice/')  # 公告页面
@@ -88,13 +104,15 @@ def login():
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone, User.password == password).first()
         if user:
-            if '管理员' in user.username:
-                session['user_id'] = user.id
-                session.permanent = True
-                print('登录成功')
-                return redirect(url_for('manager'))
+            # if '管理员' in user.username:
+            #     session['user_id'] = user.id
+            #     session.permanent = True
+            #     print('登录成功')
+            #     return redirect(url_for('manager'))
             # 登录成功 设置Cookie
             session['user_id'] = user.id
+            session['user_name'] = user.username
+            session['score'] = user.score
             session.permanent = True
             print('登录成功')
             return redirect(url_for('index'))
@@ -114,7 +132,7 @@ def manager():
 @login_required
 @app.route('/logout/')  # 注销登录
 def logout():
-    session.pop('user_id')
+    session.clear()
     return redirect(url_for('login'))
 
 
@@ -175,8 +193,10 @@ def regist():
                 return '两次密码输入不一致'
             else:
                 print('注册成功')
-                user = User(telephone=telephone, username=username, password=password)
+                user = User(telephone=telephone, username=username, password=password)  # 用户
+                # extra_info = ExtraInfo(telephone=telephone)  # 额外信息
                 db.session.add(user)
+                # db.session.add(extra_info)
                 db.session.commit()
                 # 注册成功页面跳转到登录界面
                 return redirect(url_for('login'))

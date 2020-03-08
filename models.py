@@ -2,6 +2,8 @@ from extra import db
 from datetime import datetime
 
 
+# 更新指令 python manager.py db migrate -> python manager.py db upgrade
+
 # 用户表
 class User(db.Model):
     __tablename__ = 'user'
@@ -9,6 +11,19 @@ class User(db.Model):
     telephone = db.Column(db.String(11), nullable=False)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+
+    learn_time = db.Column(db.Integer)  # 学习时长
+    learn_content = db.Column(db.String(50))  # 学习内容(资源分区)
+    score = db.Column(db.Integer)  # 积分=答题得分-答错扣分+学习时长*权重
+
+
+# 用户额外信息: 学习时长，学习内容，测试得分
+class ExtraInfo(db.Model):
+    __tabelname__ = 'extra_info'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    learn_time = db.Column(db.Integer)  # 学习时长
+    learn_content = db.Column(db.String(50))  # 学习内容
+    telephone = db.Column(db.String(11), nullable=False)  # 电话是与User的桥梁
 
 
 # 问题表
@@ -19,9 +34,9 @@ class Question(db.Model):
     content = db.Column(db.Text, nullable=False)
     # now()服务器第一次运行时间， now每次创建时的当前时间
     create_time = db.Column(db.DateTime, default=datetime.now())
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    author = db.relationship('User', backref=db.backref('questions'))  # 外链
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=db.backref('questions'))  # question.author
 
 
 # 回复表
@@ -30,9 +45,9 @@ class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.Text, nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.now())
+
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
-
     author = db.relationship('User', backref=db.backref('answers'))
     question = db.relationship('Question', backref=db.backref('answers', order_by=id.desc()))
 
@@ -43,8 +58,8 @@ class UserInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     signature = db.Column(db.Text, nullable=False)
     birthday = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('user-info'))
 
 
@@ -56,8 +71,8 @@ class Notice(db.Model):
     content = db.Column(db.Text, nullable=False)  # 通知内容
     # now()服务器第一次运行时间， now每次创建时的当前时间
     create_time = db.Column(db.DateTime, default=datetime.now())
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = db.relationship('User', backref=db.backref('notices'))  # 外链(通知者)
 
 
@@ -68,3 +83,21 @@ class Garbage(db.Model):
     name = db.Column(db.String(50), nullable=False)
     code_id = db.Column(db.Integer)  # 分类代码
     code_name = db.Column(db.String(50), nullable=False)  # 分类名称
+
+
+# 视频资源
+class Video(db.Model):
+    __tablename__ = 'video'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(50), nullable=False)  # 标题
+    link = db.Column(db.String(50), nullable=False)  # 链接
+    code_id = db.Column(db.Integer)  # 平台分类代码
+
+
+# 资讯
+class News(db.Model):
+    __tablename__ = 'news'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(50), nullable=False)  # 标题
+    date = db.Column(db.String(50), nullable=False)  # 日期
+    content = db.Column(db.Text, nullable=False)  # 内容
