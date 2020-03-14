@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}文章标题{% endblock %}
+{% block title %}{{question_model.title}}{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{url_for('static',filename='css/detail.css')}}">

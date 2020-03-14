@@ -7,7 +7,6 @@ import random
 import os, json
 
 
-
 app = Flask(__name__)
 app.config.from_object(config)
 db.init_app(app)
@@ -40,8 +39,8 @@ def index():  # 主页
             return 'no search'
 
 
-@login_required
 @app.route('/test/', methods=['GET', 'POST'])  # 考试
+@login_required
 def test():
     garbage = Garbage.query.filter(Garbage.id == random.randint(1, 22)).first()  # 随机出垃圾
     if request.method == 'GET':
@@ -51,16 +50,16 @@ def test():
         return render_template('test.html', garbage=garbage)
     else:
         garbage_choice = request.form.get('garbage')  # 你选了啥
+        user1 = User.query.filter(User.id == session.get('user_id')).first()
+        print(session.get('user_name'))
         if(garbage.code_id == int(garbage_choice)):  # 选对了加一分
-            print(type(session.get('score')))
-            user1 = User.query.filter(User.id == session.get('user_id')).first()
-            print(session.get('user_name'))
             user1.score = session.get('score')+1
             session['score'] += 1
-            db.session.commit()
-            print(garbage_choice)
         else:  # 答错扣一分
-            pass
+            user1.score = session.get('score') - 1
+            session['score'] -= 1
+        db.session.commit()
+        print(garbage_choice)
         return render_template('test.html', garbage=garbage)
 
 
@@ -77,8 +76,8 @@ def notice():
     return render_template('notice.html', **content)
 
 
-@login_required
 @app.route('/write_notice/', methods=['GET', 'POST'])  # 发布公告
+@login_required
 def write_notice():
     if request.method == 'GET':
         return render_template('write_notice.html')
@@ -164,12 +163,19 @@ def question():
         return redirect(url_for('index'))
 
 
-@login_required
 @app.route('/detail/<question_id>')  # 问题
+@login_required
 def detail(question_id):
     question_model = Question.query.filter(Question.id == question_id).first()
     number_answer = len(question_model.answers)
     return render_template('detail.html', question_model=question_model, number_answer=number_answer)
+
+
+@app.route('/news/<news_id>')  # 资讯页
+def news_detail(news_id):
+    news_model = News.query.filter(News.id == news_id).first()
+    # number_answer = len(question_model.answers)
+    return render_template('news_detail.html', news_model=news_model)
 
 
 @app.route('/regist/', methods=['GET', 'POST'])  # 注册
@@ -242,6 +248,15 @@ def user():
             db.session.commit()
         print(user_info.signature)
         return redirect(url_for('index'))
+
+
+@app.route('/news/', methods=['get', 'post'])  # 资讯
+def news():
+    if request.method == 'GET':
+        content = {
+            'news': News.query.order_by('date').all()
+        }
+        return render_template('news.html', **content)
 
 
 if __name__ == '__main__':

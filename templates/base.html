@@ -28,22 +28,16 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li>
-                <a href="/home/">首页<span class="sr-only">(current)</span></a>
-            </li>
-            <li>
-                <a href="{{url_for('question')}}">提问</a>
-            </li>
-            <li>
-                <a href="{{url_for('test')}}">题库</a>
-            </li>
-            <li>
-                <a href="{{url_for('notice')}}">公告</a>
-            </li>
+            <li><a href="/home/">首页<span class="sr-only">(current)</span></a></li>
+            <li><a href="{{url_for('test')}}">题库</a></li>
+            <li><a href="{{url_for('notice')}}">公告</a></li>
+            <li><a href="{{url_for('news')}}">资讯</a></li>
+
             <li class="dropdown" style="overflow:visible">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">更多 <span class="caret"></span></a>
               <ul class="dropdown-menu">
+                <li><a href="{{url_for('question')}}">提问</a></li>
                 <li><a href="{{url_for('write_notice')}}">发布公告</a></li>
                 <li><a href="#">积分排行榜</a></li>
                 <li><a href="{{url_for('classroom')}}">科普学堂</a></li>

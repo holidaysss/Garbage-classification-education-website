@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}资讯{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+{% endblock %}
+
+{% block main %}
+    <ul>
+        {% for new in news %}
+            <li>
+
+                <div class="question-group">
+                    <!--详细-->
+                    <p class="question-title"><a href="{{url_for('news_detail',news_id=new.id)}}" style="color: black;">{{new.title}}</a></p>
+                    <div class="question-info">
+                        <span class="question-time">{{new.date}}</span>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
