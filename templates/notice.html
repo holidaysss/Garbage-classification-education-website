@@ -22,6 +22,9 @@
                     <p class="question-content">{{notice.content}}</p>
                     <div class="question-info">
                         <span class="question-time">{{notice.create_time}}</span>
+                        {% if flag==0 %}
+                            <span><button type="submit" value="{{notice.id}}" name="notice_id">删除</button></span>
+                        {% endif %}
                     </div>
                 </div>
             </li>

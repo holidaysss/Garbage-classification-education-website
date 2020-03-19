@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}积分排行榜{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/question.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+{% endblock %}
+
+{% block main %}
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">积分排行榜</div>
+  <!-- Table -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>排名</th>
+        <th>昵称</th>
+        <th>得分</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for i in range(num) %}
+      <tr>
+        <th scope="row">{{i+1}}</th>
+        <th>{{users[i].username}}</th>
+        <th>{{users[i].score}}</th>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

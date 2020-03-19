@@ -11,6 +11,8 @@ class User(db.Model):
     telephone = db.Column(db.String(11), nullable=False)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    school = db.Column(db.String(100))
+    active = learn_time = db.Column(db.Integer)
 
     learn_time = db.Column(db.Integer)  # 学习时长
     learn_content = db.Column(db.String(50))  # 学习内容(资源分区)
@@ -71,6 +73,7 @@ class Notice(db.Model):
     content = db.Column(db.Text, nullable=False)  # 通知内容
     # now()服务器第一次运行时间， now每次创建时的当前时间
     create_time = db.Column(db.DateTime, default=datetime.now())
+    school = db.Column(db.String(100))  # 通知适用范围
 
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = db.relationship('User', backref=db.backref('notices'))  # 外链(通知者)

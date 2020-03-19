@@ -10,6 +10,7 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -28,20 +29,31 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li><a href="/home/">首页<span class="sr-only">(current)</span></a></li>
-            <li><a href="{{url_for('test')}}">题库</a></li>
-            <li><a href="{{url_for('notice')}}">公告</a></li>
-            <li><a href="{{url_for('news')}}">资讯</a></li>
+            <li><a href="/home/">
+                <span class="glyphicon glyphicon-home" aria-hidden="true" style="padding-right: 5px;"></span>
+                首页<span class="sr-only">(current)</span></a></li>
+            <li><a href="{{url_for('test')}}">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true" style="padding-right: 5px;"></span>
+                题库</a></li>
+            <li><a href="{{url_for('notice')}}">
+                <span class="glyphicon glyphicon-bullhorn" aria-hidden="true" style="padding-right: 5px;"></span>
+                公告</a></li>
+            <li><a href="{{url_for('news')}}">
+                <span class="glyphicon glyphicon-book" aria-hidden="true" style="padding-right: 5px;"></span>
+                资讯</a></li>
 
             <li class="dropdown" style="overflow:visible">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">更多 <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{url_for('question')}}">提问</a></li>
-                <li><a href="{{url_for('write_notice')}}">发布公告</a></li>
-                <li><a href="#">积分排行榜</a></li>
+                <li><a href="{{url_for('rank')}}">积分排行榜</a></li>
                 <li><a href="{{url_for('classroom')}}">科普学堂</a></li>
                 <li><a href="{{url_for('test')}}">你的测试</a></li>
+                <li role="separator" class="divider" style="padding:0px"></li>
+                <li><a href="{{url_for('write_notice')}}">发布公告</a></li>
+                <li><a href="{{url_for('write_news')}}">录入资讯</a></li>
+                <li><a href="{{url_for('write_news')}}">录入视频资源</a></li>
               </ul>
             </li>
           </ul>
