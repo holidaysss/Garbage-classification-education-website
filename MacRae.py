@@ -4,6 +4,7 @@ from models import User, Question, Answer, UserInfo, Notice, Garbage, ExtraInfo,
 from extra import db
 from decorators import login_required, manager_required
 import random
+import time, requests, re
 import os, json
 
 
@@ -77,9 +78,11 @@ def test():
         return render_template('test.html', garbage=garbage)
 
 
-@app.route('/classroom/')
-def classroom():
-    return render_template('classroom.html')
+@app.route('/classroom/<int:page>')
+def classroom(page=1):
+    videos = Video.query.filter(Video.code_id == 2)
+    video = videos.paginate(page, 15, False)
+    return render_template('classroom.html', videos=video)
 
 
 @app.route('/notice/', methods=['GET', 'POST'])  # 公告页面
@@ -110,12 +113,6 @@ def login():
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone, User.password == password).first()
         if user:
-            # if '管理员' in user.username:
-            #     session['user_id'] = user.id
-            #     session.permanent = True
-            #     print('登录成功')
-            #     return redirect(url_for('manager'))
-            # 登录成功 设置Cookie
             session['user_id'] = user.id
             session['user_name'] = user.username
             session['score'] = user.score

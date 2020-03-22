@@ -12,7 +12,7 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     school = db.Column(db.String(100))
-    active = learn_time = db.Column(db.Integer)
+    active = db.Column(db.Integer)
 
     learn_time = db.Column(db.Integer)  # 学习时长
     learn_content = db.Column(db.String(50))  # 学习内容(资源分区)
@@ -92,9 +92,10 @@ class Garbage(db.Model):
 class Video(db.Model):
     __tablename__ = 'video'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(50), nullable=False)  # 标题
-    link = db.Column(db.String(50), nullable=False)  # 链接
-    code_id = db.Column(db.Integer)  # 平台分类代码
+    title = db.Column(db.String(200), nullable=False)  # 标题
+    link = db.Column(db.String(200), nullable=False)  # 链接
+    duration = db.Column(db.String(50), nullable=False)  # 时长
+    code_id = db.Column(db.Integer)  # 平台分类代码，1:腾讯视频；2：bilibili
 
 
 # 资讯
