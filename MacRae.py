@@ -4,7 +4,7 @@ from models import User, Question, Answer, UserInfo, Notice, Garbage, ExtraInfo,
 from extra import db
 from decorators import login_required, manager_required
 import random
-import time, requests, re
+import time, requests, re, datetime
 import os, json
 
 
@@ -23,7 +23,7 @@ def men():  # 入口
 def index():  # 主页
     if request.method == 'GET':
         content = {
-            'questions': Question.query.order_by('-create_time').all()
+            'questions': Question.query.order_by(Question.create_time.desc()).all()
         }
         if session.get('user_name') and '管理员' in session.get('user_name'):  # 管理员首页
             return render_template('manager.html', **content)
@@ -32,12 +32,11 @@ def index():  # 主页
     else:
         if(request.form.get('id')):  # 删除问题
             question_id = request.form.get('id')
-            print(question_id)
             question_1 = Question.query.filter(Question.id == question_id).first()
             db.session.delete(question_1)
             db.session.commit()
             content = {
-                'questions': Question.query.order_by('-create_time').all()
+                'questions': Question.query.order_by(Question.create_time.desc()).all()
             }
             return render_template('manager.html', **content)
         else:  # 搜索框
@@ -57,25 +56,41 @@ def index():  # 主页
 @app.route('/test/', methods=['GET', 'POST'])  # 考试
 @login_required
 def test():
-    garbage = Garbage.query.filter(Garbage.id == random.randint(1, 22)).first()  # 随机出垃圾
+    global garbage
     if request.method == 'GET':
-        print('get')
-        print(garbage)
-        print(garbage.name)
-        return render_template('test.html', garbage=garbage)
+        garbage = Garbage.query.filter(Garbage.id == random.randint(1, 3000)).first()  # 随机出垃圾
+        content = {
+            'garbage': garbage  # 随机出垃圾
+        }
+        return render_template('test.html', **content)
     else:
         garbage_choice = request.form.get('garbage')  # 你选了啥
         user1 = User.query.filter(User.id == session.get('user_id')).first()
         print(session.get('user_name'))
-        if(garbage.code_id == int(garbage_choice)):  # 选对了加一分
-            user1.score = session.get('score')+1
-            session['score'] += 1
-        else:  # 答错扣一分
-            user1.score = session.get('score') - 1
-            session['score'] -= 1
-        db.session.commit()
-        print(garbage_choice)
-        return render_template('test.html', garbage=garbage)
+        if (request.form.get('next')):  # 下一题
+            garbage = Garbage.query.filter(Garbage.id == random.randint(1, 3000)).first()  # 随机出垃圾
+            content = {
+                'garbage': garbage  # 随机出垃圾
+            }
+        else:  # 选择选项
+            if(garbage.code_id == int(garbage_choice)):  # 选对了加一分
+                user1.score = session.get('score')+1
+                session['score'] += 1
+                answer = '答对了！ ' + garbage.name + '是' + str(garbage.code_name)
+                print('答对了！ ' + garbage.name + '是' + str(garbage.code_name))
+            else:  # 答错扣一分
+                user1.score = session.get('score') - 1
+                session['score'] -= 1
+                answer = '答错了,'+garbage.name+'是'+str(garbage.code_name)
+                print('答错了，'+garbage.name+'是'+str(garbage.code_name))
+            db.session.commit()
+            print(garbage.name)
+            content = {
+                'garbage': garbage,  # 随机出垃圾
+                'answer': answer
+            }
+            return render_template('test.html', **content)
+        return render_template('test.html', **content)
 
 
 @app.route('/classroom/<int:page>')
@@ -91,16 +106,23 @@ def notice():
     flag = 1
     if ('管理员' in session.get('user_name')):
         flag = 0
-    if request.method == 'post':
-        notice_id = request.form.get('notice_id')
-        notice_1 = Notice.query.filter(Notice.id == notice_id)
-        db.session.delete(notice_1)
-        db.session.commit()
     content = {
         'flag': flag,
-        'notices': Notice.query.filter(Notice.school == session.get('school')).order_by('-create_time').all()
+        'notices': Notice.query.filter(Notice.school == session.get('school')).order_by(
+            Notice.create_time.desc()).all()
     }
-
+    if request.method == 'POST':
+        notice_id = request.form.get('notice_id')
+        notice_1 = Notice.query.filter(Notice.id == notice_id).first()
+        db.session.delete(notice_1)
+        db.session.commit()
+        print(notice_id)
+        content = {
+            'flag': flag,
+            'notices': Notice.query.filter(Notice.school == session.get('school')).order_by(
+                Notice.create_time.desc()).all()
+        }
+        return render_template('notice.html', **content)
     return render_template('notice.html', **content)
 
 
@@ -117,8 +139,9 @@ def login():
             session['user_name'] = user.username
             session['score'] = user.score
             session['school'] = user.school
+            session['time'] = time.time()  # 登录时间
             session.permanent = True
-            print('登录成功')
+            # print('登录成功')
             return redirect(url_for('index'))
         else:
             return '手机号或密码错误'
@@ -128,7 +151,7 @@ def login():
 @login_required
 def manager():
     content = {
-        'questions': Question.query.order_by('-create_time').all()
+        'questions': Question.query.order_by(Question.create_time.desc()).all()
     }
     return render_template('manager.html', **content)
 
@@ -146,7 +169,10 @@ def my_context_processor():
     if user_id:
         user = User.query.filter(User.id == user_id).first()
         if user:
+            # print('user')
             return {'user': user}
+    #     print('user_id')
+    # print('nothing')
     return {}
 
 
@@ -197,7 +223,6 @@ def regist():
         user = User.query.filter(User.telephone == telephone).first()
         if user:
             print('手机号已被注册')
-
             return '手机号已被注册'
         else:
             if password != repassword:
@@ -207,11 +232,8 @@ def regist():
                 print('注册成功')
                 user = User(telephone=telephone, username=username,
                             password=password, school=school, learn_time=0, score=0, active=1)  # 用户
-                # extra_info = ExtraInfo(telephone=telephone)  # 额外信息
                 db.session.add(user)
-                # db.session.add(extra_info)
                 db.session.commit()
-                # 注册成功页面跳转到登录界面
                 return redirect(url_for('login'))
 
 
@@ -231,29 +253,34 @@ def add_answer():
     return redirect(url_for('detail', question_id=question_id))
 
 
-@app.route('/user/', methods=['get', 'post'])  # 用户主页
+@app.route('/user/<user_id>', methods=['get', 'post'])  # 用户主页
 @login_required
-def user():
+def user(user_id):
     if request.method == 'GET':
-        user_info = UserInfo.query.filter(User.id == session['user_id']).first()
-        user = User.query.filter(User.id == session['user_id']).first()
+        user_info = UserInfo.query.filter(UserInfo.user_id == user_id).first()  # 目标访问用户的信息
+        if(user_info is None):  # 用户主页尚未设置。id=13，14为无效用户
+            if(int(user_id) != session['user_id']):  # 访问别人主页
+                user_info = UserInfo.query.filter(UserInfo.user_id == 13).first()  # 不可修改
+            else:  # 自己访问自己主页
+                user_info = UserInfo.query.filter(UserInfo.user_id == 14).first()  # 可初始化主页
+        user = User.query.filter(User.id == session['user_id']).first()  # 当前登录的用户
         print(user_info)
+        print(user)
         return render_template('user.html', user_info=user_info, user=user)
 
     else:
         signature = request.form.get('signature')
         birthday = request.form.get('birthday')
         user_id = session['user_id']
-        user_info = UserInfo.query.filter(User.id == session['user_id']).first()
-        if user_info:
+        user_info = UserInfo.query.filter(UserInfo.user_id == session['user_id']).first()
+        if user_info:  # 先删除后增添
             db.session.delete(user_info)
             user_info = UserInfo(signature=signature, birthday=birthday, user_id=user_id)
             db.session.add(user_info)
-            db.session.commit()
         else:
             user_info = UserInfo(signature=signature, birthday=birthday, user_id=user_id)
             db.session.add(user_info)
-            db.session.commit()
+        db.session.commit()
         print(user_info.signature)
         return redirect(url_for('index'))
 
@@ -262,7 +289,7 @@ def user():
 def news():
     if request.method == 'GET':
         content = {
-            'news': News.query.order_by('-date').all()
+            'news': News.query.order_by(News.date.desc()).all()
         }
         return render_template('news.html', **content)
 
@@ -270,9 +297,9 @@ def news():
 @app.route('/rank/', methods=['get', 'post'])
 def rank():
     if request.method == 'GET':
-        num = len(User.query.order_by('-score').all())
+        num = len(User.query.order_by('score').all())
         content = {
-            'users': User.query.order_by('-score').all(),  # 用户
+            'users': User.query.order_by(User.score.desc()).all(),  # 用户
             'num': num  # 用户数
         }
         return render_template('rank.html', **content)
@@ -316,4 +343,6 @@ def write_news():
 
 
 if __name__ == '__main__':
+    # from werkzeug.contrib.fixers import ProxyFix
+    # app.wsgi_app = ProxyFix(app.wsgi_app)
     app.run(debug=True)

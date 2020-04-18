@@ -11,8 +11,11 @@
 <form action="" method="post">
     <h3 style="text-align: center;font-weight: 600;">个人主页</h3>
     <div class="user-name">
-        <p>昵称：<input autocomplete="off" placeholder="{{user.username}}" type="text" rows="2" validateevent="true"
-                     class="el-input__inner" name="username"></p>
+        {% if user_info.user_id == 14 %}
+            <p>昵称：{{user.username}}</p>
+        {% else %}
+            <p>昵称：{{user_info.username}}</p>
+        {% endif %}
     </div>
     <div class="signature">
         {% if user_info %}
@@ -31,9 +34,15 @@
             <p>生产日期：<input autocomplete="off" placeholder="你的生日多少啊" type="text" rows="2" validateevent="true"
                        class="el-input__inner" style="width: 122px;" name="birthday"></p>
         {% endif %}
-        <p>学校/单位：{{user.school}}</p>
+        <p>学校/单位：{{user_info.user.school}}</p>
     </div>
-    <p style="text-align: center;"><button type="submit" class="btn btn-primary">保存</button></p>
+    {% if user.id == user_info.user.id %}
+        <p style="text-align: center;"><button type="submit" class="btn btn-primary">保存</button></p>
+    {% elif user_info.user_id == 14 %}
+        <p style="text-align: center;"><button type="submit" class="btn btn-primary">保存</button></p>
+    {% endif %}
+
+
 </form>
 
 {% endblock %}

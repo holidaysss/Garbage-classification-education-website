@@ -11,11 +11,15 @@
         <form action="" method="post">
             <div>
                 <h3 style="color:#D42121;">{{garbage.name}}</h3>
-                <button type="submit" value="1" name="garbage">A:干垃圾</button>
-                <button type="submit" value="2" name="garbage">B:湿垃圾</button>
-                <button type="submit" value="3" name="garbage">C:可回收垃圾</button>
-                <button type="submit" value="4" name="garbage">D:有害垃圾</button>
+                <button type="submit" value="1" name="garbage" class="btn btn-default" aria-label="Left Align">A:可回收垃圾</button>
+                <button type="submit" value="2" name="garbage" class="btn btn-default" aria-label="Left Align">B:有害垃圾</button>
+                <button type="submit" value="3" name="garbage" class="btn btn-default" aria-label="Left Align">C:湿垃圾</button>
+                <button type="submit" value="4" name="garbage" class="btn btn-default" aria-label="Left Align">D:干垃圾</button>
             </div>
+            <button type="submit" value="1" name="next" class="btn btn-info dropdown-toggle" aria-haspopup="true" aria-expanded="false">下一题</button>
+            {% if answer%}
+                <p>{{answer}}</p>
+            {% endif %}
         </form>
     </ul>
 {% endblock %}

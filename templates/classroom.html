@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}test{% endblock %}
+{% block title %}classroom{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
@@ -20,16 +20,18 @@
         <tr>
             <td>
                 {% if videos.has_prev %}
-                <a target="_self" href="{{ url_for('classroom', page = videos.prev_num) }}" style="color:blue;text-decoration:blink;"><<  </a>
+                <a target="_self" href="{{ url_for('classroom', page = videos.prev_num) }}"
+                   style="color:blue;text-decoration:blink;"><<  </a>
                 {% else %}
                 <p style="color: black;text-decoration:blink;"><< </p>
                 {% endif %}
             </td>
             <td>
                 {% if videos.has_next %}
-                <a target="_self" href="{{ url_for('classroom', page = videos.next_num) }}" style="color:blue;text-decoration:blink;">  >></a>
+                <a target="_self" href="{{ url_for('classroom', page = videos.next_num) }}"
+                   style="color:blue;text-decoration:blink;">  {{videos.next_num-1}}>></a>
                 {% else %}
-                <p style="color: black;text-decoration:blink;"> >></p>
+                <p style="color: black;text-decoration:blink;"> {{videos.next_num-1}}>></p>
                 {% endif %}
             </td>
         </tr>

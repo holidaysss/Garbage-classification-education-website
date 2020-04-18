@@ -16,8 +16,67 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
         </li>
-        <li>
-            {{garbage_model.name}}是{{garbage_model.code_name}}
-        </li>
+        <h1>
+            <center>
+                <span style="color:#D42121;">{{garbage_model.name}}</span>
+                <span style="color:#FBbC28;">&nbsp;属于&nbsp;</span>
+                <span style="#2e2a2b">{{garbage_model.code_name}}</span>
+            </center>
+        </h1>
     </ul>
+<div class="col-md-offset-1 col-md-10 col-xs-12">
+    <br>
+      <div class="row">
+        <div class="col-md-6 col-xs-12">
+          <div class="row" style="border: 1px dashed #dfdfdf;">
+            <div class="col-md-3 col-xs-3">
+              <img style="max-width: 100px;" alt="可回收物" src="/static/images/1.svg">
+            </div>
+            <div class="col-md-9 col-xs-9" style="color: #3F6BA8;padding-left: 22px;vertical-align: middle;">
+                <h3 style="margin-top: 0px">可回收物</h3>
+                <p style="">指废纸张、废塑料、废玻璃制品、废金属、废织物等适宜回收、可循环利用的生活废弃物。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xs-12">
+          <div class="row" style="border: 1px dashed #dfdfdf;">
+            <div class="col-md-3 col-xs-3">
+              <img style="max-width: 100px;" alt="有害垃圾" src="/static/images/2.svg">
+            </div>
+            <div class="col-md-9 col-xs-9" style="color: #B43953;padding-left: 22px;vertical-align: middle;">
+                <h3 style="margin-top: 0px">有害垃圾</h3>
+                <p style="">指废电池、废灯管、废药品、废油漆及其容器等对人体健康或者自然环境造成直接或者潜在危害的生活废弃物。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-xs-12">
+          <div class="row" style="border: 1px dashed #dfdfdf;">
+            <div class="col-md-3 col-xs-3">
+              <img style="max-width: 100px;" alt="湿垃圾" src="/static/images/3.svg">
+            </div>
+            <div class="col-md-9 col-xs-9" style="color: #8F6F55;padding-left: 22px;vertical-align: middle;">
+                <h3 style="margin-top: 0px">湿垃圾</h3>
+                <p style="">即易腐垃圾，指食材废料、剩菜剩饭、过期食品、瓜皮果核、花卉绿植、中药药渣等易腐的生物质生活废弃物。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xs-12">
+          <div class="row" style="border: 1px dashed #dfdfdf;">
+            <div class="col-md-3 col-xs-3">
+              <img style="max-width: 100px;" alt="干垃圾" src="/static/images/4.svg">
+            </div>
+            <div class="col-md-9 col-xs-9" style="color: #2F3D39;padding-left: 22px;vertical-align: middle;">
+                <h3 style="margin-top: 0px">干垃圾</h3>
+                <p style="">即其它垃圾，指除可回收物、有害垃圾、湿垃圾以外的其它生活废弃物（如：口罩、塑料袋）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
 {% endblock %}

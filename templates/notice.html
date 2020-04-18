@@ -14,7 +14,7 @@
             <li>
                 <div class="avatar-group">
                     <img src="{{url_for('static',filename='images/time.jpg')}}" alt="" class="avatar">
-                    <p>{{notice.author.username}}</p>
+                    <p><a href="{{url_for('user', user_id=notice.author.id)}}">{{notice.author.username}}</a></p>
                 </div>
                 <div class="question-group">
                     <!--详细-->
@@ -23,7 +23,12 @@
                     <div class="question-info">
                         <span class="question-time">{{notice.create_time}}</span>
                         {% if flag==0 %}
-                            <span><button type="submit" value="{{notice.id}}" name="notice_id">删除</button></span>
+
+                            <div>
+                                <form action="" method="post">
+                                    <button type="submit" value="{{notice.id}}" name="notice_id">删除</button>
+                                </form>
+                            </div>
                         {% endif %}
                     </div>
                 </div>

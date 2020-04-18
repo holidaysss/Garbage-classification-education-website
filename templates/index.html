@@ -4,7 +4,6 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
-
 {% endblock %}
 
 {% block main %}
@@ -77,7 +76,7 @@
             <li>
                 <div class="avatar-group">
                     <img src="{{url_for('static',filename='images/time.jpg')}}" alt="" class="avatar">
-                    <p>{{question.author.username}}</p>
+                    <p><a href="{{url_for('user', user_id=question.author.id)}}">{{question.author.username}}</a></p>
                 </div>
                 <div class="question-group">
                     <p class="question-title"><a href="{{url_for('detail',question_id=question.id)}}">{{question.title}}</a></p>
