@@ -7,34 +7,37 @@
 {% endblock %}
 
 {% block main %}
-<div>
+<div style="width: 720px;">
     <table data-pagination="true" data-side-pagination="client" data-page-size="10" >
             {% for video in videos.items %}
             <tr>
-                <td><a href="{{video.link}}" style="color:pink; text-decoration:blink;">{{video.title}}</a></td>
+                <td><a href="{{video.link}}" style="color:black; text-decoration:blink;">{{video.title}}</a></td>
 
             </tr>
             {% endfor %}
     </table>
     <table>
-        <tr>
-            <td>
-                {% if videos.has_prev %}
+        <nav aria-label="...">
+          <ul class="pager">
+            <li>{% if videos.has_prev %}
                 <a target="_self" href="{{ url_for('classroom', page = videos.prev_num) }}"
                    style="color:blue;text-decoration:blink;"><<  </a>
                 {% else %}
-                <p style="color: black;text-decoration:blink;"><< </p>
-                {% endif %}
-            </td>
-            <td>
-                {% if videos.has_next %}
+                <a target="_self" href="#"><< </a>
+                {% endif %}</li>
+            {% if videos.has_next %}
+                <li>{{videos.next_num-1}}</li>
+            {% else %}
+                <li>{{videos.prev_num+1}}</li>
+            {% endif %}
+            <li>{% if videos.has_next %}
                 <a target="_self" href="{{ url_for('classroom', page = videos.next_num) }}"
-                   style="color:blue;text-decoration:blink;">  {{videos.next_num-1}}>></a>
+                   style="color:blue;text-decoration:blink;">  >></a>
                 {% else %}
-                <p style="color: black;text-decoration:blink;"> {{videos.next_num-1}}>></p>
-                {% endif %}
-            </td>
-        </tr>
+                <a target="_self" href="#">>> </a>
+                {% endif %}</li>
+          </ul>
+        </nav>
     </table>
 </div>
 {% endblock %}

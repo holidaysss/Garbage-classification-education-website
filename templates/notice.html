@@ -23,10 +23,10 @@
                     <div class="question-info">
                         <span class="question-time">{{notice.create_time}}</span>
                         {% if flag==0 %}
-
                             <div>
                                 <form action="" method="post">
-                                    <button type="submit" value="{{notice.id}}" name="notice_id">删除</button>
+                                    <button type="submit" value="{{notice.id}}" name="notice_id" class="btn btn-info dropdown-toggle"
+                                            aria-haspopup="true" aria-expanded="false">删除</button>
                                 </form>
                             </div>
                         {% endif %}

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import config
-from models import User, Question, Answer, UserInfo, Notice, Garbage, ExtraInfo, News, Video
+from models import User, Question, Answer, UserInfo, Notice, Garbage,  News, Video, SignIn, Feedback
 from extra import db
 from decorators import login_required, manager_required
 import random
@@ -53,6 +53,90 @@ def index():  # 主页
                 return 'no search'
 
 
+@app.route('/sign_in/', methods=['GET', 'POST'])  # 签到页
+@login_required
+def sign_in():
+    user = User.query.filter(User.id == session['user_id']).first()  # 当前用户
+    today = str(datetime.date.today())  # 今天的日期
+    oneday = datetime.timedelta(days=1)
+    yesterday = str(datetime.date.today() - oneday)  # 昨天的日期
+    sign_today = SignIn.query.filter(SignIn.user_id == user.id, SignIn.time == today).first()
+    sign_yesterday = SignIn.query.filter(SignIn.user_id == user.id, SignIn.time == yesterday).first()
+    if sign_today:  # 获取连续天数num
+        num = sign_today.num
+    elif sign_yesterday:
+        num = sign_yesterday.num
+    else:
+        num = 0
+    if request.method == 'GET':
+        content = {
+            'num': num
+        }
+        print(num)
+    else:  # 签到
+        if not sign_today:  # 今天还没签
+            if sign_yesterday:  # 昨天签到，连续天数+1
+                num = int(sign_yesterday.num) + 1
+            else:
+                num = 1
+            sign = SignIn(time=datetime.date.today(), user_id=user.id, num=num)
+            db.session.add(sign)
+            db.session.commit()
+            content = {
+                'num': num
+            }
+            return render_template('sign_in.html', **content)
+        content = {
+            'num': num
+        }
+    return render_template('sign_in.html', **content)
+
+
+@app.route('/feedback/', methods=['GET', 'POST'])  # 反馈页
+@login_required
+def feedback():
+    if request.method == 'GET':
+        my_feedback = Feedback.query.filter(Feedback.author_id == session['user_id']).all()
+        if '管理员' in session['user_name']:
+            return redirect(url_for('feedback_manager'))
+        return render_template('feedback.html', my_feedback=my_feedback)
+    else:
+        title = request.form.get('title')
+        content = request.form.get('content')
+        feedback = Feedback(title=title, content=content)
+        user = User.query.filter(User.id == session['user_id']).first()
+        feedback.author = user
+        db.session.add(feedback)
+        db.session.commit()
+        return redirect(url_for('index'))
+
+
+@app.route('/feedback_manager/', methods=['GET', 'POST'])  # 管理员反馈页
+@login_required
+@manager_required
+def feedback_manager():
+    Feedbacks = []  # 对应学校的反馈
+    feedbacks = Feedback.query.filter().all()
+    for feedback in feedbacks:
+        if(feedback.author.school == session['school']):
+            Feedbacks.append(feedback)
+    print(Feedbacks)
+    content = {
+        'feedbacks': Feedbacks
+    }
+    if request.method == 'GET':
+        return render_template('feedback_manager.html', **content)
+    else:
+        reply_content = request.form.get('reply_content')
+        feedback_id = request.form.get('feedback_id')
+        feedback = Feedback.query.filter(Feedback.id == feedback_id).first()
+        feedback.reply = reply_content
+        feedback.reply_time = datetime.datetime.now()
+        feedback.manager_id = session['user_id']
+        db.session.commit()
+        return render_template('feedback_manager.html', **content)
+
+
 @app.route('/test/', methods=['GET', 'POST'])  # 考试
 @login_required
 def test():
@@ -93,7 +177,7 @@ def test():
         return render_template('test.html', **content)
 
 
-@app.route('/classroom/<int:page>')
+@app.route('/classroom/<int:page>')  # 视频学习区
 def classroom(page=1):
     videos = Video.query.filter(Video.code_id == 2)
     video = videos.paginate(page, 15, False)
@@ -111,7 +195,7 @@ def notice():
         'notices': Notice.query.filter(Notice.school == session.get('school')).order_by(
             Notice.create_time.desc()).all()
     }
-    if request.method == 'POST':
+    if request.method == 'POST':  # 删除通知
         notice_id = request.form.get('notice_id')
         notice_1 = Notice.query.filter(Notice.id == notice_id).first()
         db.session.delete(notice_1)
@@ -189,17 +273,38 @@ def question():
         user_id = session.get('user_id')  # 获取id
         user = User.query.filter(User.id == user_id).first()
         question.author = user
+        print(question.author.id)
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('index'))
 
 
-@app.route('/detail/<question_id>')  # 问题
+@app.route('/detail/<question_id>', methods=['GET', 'POST'])  # 问题
 @login_required
 def detail(question_id):
-    question_model = Question.query.filter(Question.id == question_id).first()
-    number_answer = len(question_model.answers)
-    return render_template('detail.html', question_model=question_model, number_answer=number_answer)
+    flag = 1
+    if ('管理员' in session.get('user_name')):
+        flag = 0
+    question = Question.query.filter(Question.id == question_id).first()
+    content = {
+        'flag': flag,
+            'question_model': question,
+            'number_answer': len(Question.query.filter(Question.id == question_id).first().answers)
+    }
+    print(str(question.create_time)[:10])
+    if request.method == 'POST':  # 删除评论
+        answer_id = request.form.get('answer_id')
+        answer_1 = Answer.query.filter(Answer.id == answer_id).first()
+        db.session.delete(answer_1)
+        db.session.commit()
+        print(answer_id)
+        content = {
+            'flag': flag,
+            'question_model': Question.query.filter(Question.id == question_id).first(),
+            'number_answer': len(Question.query.filter(Question.id == question_id).first().answers)
+        }
+        return render_template('detail.html', **content)
+    return render_template('detail.html', **content)
 
 
 @app.route('/news/<news_id>')  # 资讯页
@@ -294,13 +399,26 @@ def news():
         return render_template('news.html', **content)
 
 
-@app.route('/rank/', methods=['get', 'post'])
-def rank():
+@app.route('/rank/<school>', methods=['get', 'post'])
+def rank(school):
     if request.method == 'GET':
-        num = len(User.query.order_by('score').all())
+        users = User.query.filter(User.username != '0' or User.username != '1').order_by(User.score.desc()).all()
+        num = len(users)
+        schools = []
+        for user in users:
+            if(user.school not in schools):
+                schools.append(user.school)
+        if(school == 'all'):pass
+        else:  # 所选学校的用户
+            users = User.query.filter(User.school == school).order_by(User.score.desc()).all()
+            num = len(users)
+        print(users)
+        print(num)
         content = {
-            'users': User.query.order_by(User.score.desc()).all(),  # 用户
-            'num': num  # 用户数
+            'users': users,  # 用户
+            'num': num,  # 用户数
+            'schools': schools,
+            'School': school  # 所选学校，all为全体
         }
         return render_template('rank.html', **content)
 

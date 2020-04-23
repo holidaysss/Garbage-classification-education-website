@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}签到{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/question.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+{% endblock %}
+
+{% block main %}
+    <span>
+        {% for i in range(num) %}
+        第{{num}}天：<img src="{{url_for('static',filename='images/对勾.png')}}" alt="">
+        {% endfor %}
+    </span>
+    <form action="" method="post">
+        <button type="submit" class="btn btn-info dropdown-toggle" aria-haspopup="true" aria-expanded="false">签到</button>
+    </form>
+{% endblock %}

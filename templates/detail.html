@@ -29,6 +29,15 @@
                     <span class="create_time">{{answer.create_time}}</span>
                 </div>
                 <p class="answer-content">{{answer.content}}</p>
+                {% if flag==0 %}
+                <div>
+                    <form action="" method="post">
+
+                        <button type="submit" value="{{answer.id}}" name="answer_id" class="btn btn-info dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                            删除</button>
+                    </form>
+                </div>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

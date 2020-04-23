@@ -42,23 +42,27 @@
                 <span class="glyphicon glyphicon-book" aria-hidden="true" style="padding-right: 5px;"></span>
                 资讯</a></li>
 
+
             <li class="dropdown" style="overflow:visible">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                  aria-expanded="false">更多 <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{url_for('question')}}">提问</a></li>
-                <li><a href="{{url_for('rank')}}">积分排行榜</a></li>
+                <li><a href="{{url_for('rank',school='all')}}">积分排行榜</a></li>
                 <li><a href="{{url_for('classroom',page=1)}}">科普学堂</a></li>
-                <li><a href="{{url_for('test')}}">你的测试</a></li>
+                <li><a href="{{url_for('feedback')}}">意见箱</a></li>
                 <li role="separator" class="divider" style="padding:0px"></li>
                 <li><a href="{{url_for('write_notice')}}">发布公告</a></li>
                 <li><a href="{{url_for('write_news')}}">录入资讯</a></li>
-                <li><a href="{{url_for('write_news')}}">录入视频资源</a></li>
               </ul>
             </li>
+
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{url_for('sign_in')}}">
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true" style="padding-right: 5px;"></span>
+                        签到</a></li>
               {% if user %}
                     <li style="color: #CC0033;"><a href="{{url_for('user',user_id=user.id)}}">
                         <span class="glyphicon glyphicon-tower" aria-hidden="true" style="padding-right: 5px;"></span>

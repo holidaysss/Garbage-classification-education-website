@@ -19,13 +19,29 @@ class User(db.Model):
     score = db.Column(db.Integer)  # 积分=答题得分-答错扣分+学习时长*权重
 
 
-# 用户额外信息: 学习时长，学习内容，测试得分
-class ExtraInfo(db.Model):
-    __tabelname__ = 'extra_info'
+class SignIn(db.Model):
+    __tablename__ = 'sign_in'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    learn_time = db.Column(db.Integer)  # 学习时长
-    learn_content = db.Column(db.String(50))  # 学习内容
-    telephone = db.Column(db.String(11), nullable=False)  # 电话是与User的桥梁
+    time = db.Column(db.DateTime, default=datetime.now())  # 签到时间
+    num = db.Column(db.Integer)  # 连续天数
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('sign_in'))
+
+
+# 反馈表
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text)
+    reply = db.Column(db.Text)  # 回复
+    manager_id = db.Column(db.Integer)
+    create_time = db.Column(db.DateTime, default=datetime.now())
+    reply_time = db.Column(db.DateTime)  # 回复时间
+
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=db.backref('feedbacks'))  # 用户
 
 
 # 问题表
